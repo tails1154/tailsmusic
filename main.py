@@ -2,6 +2,8 @@
 import pygame
 import json
 import threading
+import time
+
 
 print("TailsMusic Loading...")
 # pygame setup
@@ -30,7 +32,7 @@ def music():
     global songplaying
 
 
-    pygame.mixer.music.load(songs[0])
+    pygame.mixer.music.load(songs[songplaying])
     pygame.mixer.music.play()
     nowplaying=songs[int(songplaying)]
     while pygame.mixer.music.get_busy():
@@ -38,13 +40,17 @@ def music():
     pygame.mixer.music.stop()
     pygame.mixer.music.unload()
     songplaying=songplaying+1
+    time.sleep(0.1)
     music()
 def controls():
-    global songs
-    global songcount
-    global nowplaying
-    global paused
+    time.sleep(0.1)
+    controls()
+while running:
+    # poll for events
+    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if paused:
@@ -53,12 +59,12 @@ def controls():
                 else:
                     paused=True
                     pygame.mixer.music.pause()
-while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+            elif event.key == pygame.K_RIGHT:
+                try:
+                    if songs[songplaying+1]:
+                        pygame.mixer.music.stop()
+                except:
+                    print("Can't go any further!")
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
@@ -97,5 +103,6 @@ while running:
     pygame.display.flip()
 
     clock.tick(60)  # limits FPS to 60
-
+thread1.exit()
+thread2.exit()
 pygame.quit()
