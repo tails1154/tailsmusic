@@ -31,15 +31,21 @@ def music():
     global paused
     global songplaying
 
-
-    pygame.mixer.music.load(songs[songplaying])
-    pygame.mixer.music.play()
-    nowplaying=songs[int(songplaying)]
-    while pygame.mixer.music.get_busy():
-        1+1
-    pygame.mixer.music.stop()
-    pygame.mixer.music.unload()
-    songplaying=songplaying+1
+    if not paused:
+        pygame.mixer.music.load(songs[songplaying])
+        pygame.mixer.music.play()
+        nowplaying=songs[int(songplaying)]
+        while pygame.mixer.music.get_busy():
+            1+1
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+        songplaying=songplaying+1
+        #time.sleep(0.1)
+    else:
+        while paused:
+            1+1
+        while pygame.mixer.music.get_busy():
+            1+1
     time.sleep(0.1)
     music()
 def controls():
@@ -52,19 +58,26 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                if paused:
-                    paused=False
-                    pygame.mixer.music.unpause()
-                else:
-                    paused=True
-                    pygame.mixer.music.pause()
-            elif event.key == pygame.K_RIGHT:
+            #if event.key == pygame.K_SPACE:
+             #   if paused:
+              #      paused=False
+              #      pygame.mixer.music.unpause()
+               # else:
+                #    paused=True
+                 #   pygame.mixer.music.pause()
+            if event.key == pygame.K_RIGHT:
                 try:
                     if songs[songplaying+1]:
                         pygame.mixer.music.stop()
                 except:
                     print("Can't go any further!")
+            elif event.key == pygame.K_LEFT:
+                try:
+                    if songs[songplaying-1]:
+                        songplaying=songplaying-2
+                        pygame.mixer.music.stop()
+                except:
+                    print("Can't go back any further!")
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
